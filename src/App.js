@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './components/pages/Home';
@@ -10,6 +10,13 @@ import Welcome from './components/pages/Welcome';
 
 function App() {
   const [isSignedUp, setIsSignedUp] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsSignedUp(true);
+    }
+  }, []);
 
   return (
     <Router>

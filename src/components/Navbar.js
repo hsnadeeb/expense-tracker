@@ -7,8 +7,7 @@ function NavbarC() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Implement the logout logic here
-    // For example, clearing user data from localStorage or making an API call
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
