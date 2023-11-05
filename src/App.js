@@ -7,9 +7,11 @@ import Login from './components/pages/Login';
 import Profile from './components/pages/Profile';
 import NavbarC from './components/Navbar';
 import Welcome from './components/pages/Welcome';
+import LoginVerification from './components/pages/LoginVerification';
 
 function App() {
   const [isSignedUp, setIsSignedUp] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -26,12 +28,12 @@ function App() {
           <Route path="/" element={<Welcome />} />
           <Route path="/signup" element={<Signup setIsSignedUp={setIsSignedUp} />} />
           <Route path="/login" element={<Login setIsSignedUp={setIsSignedUp} />} />
+          <Route path="/loginverification" element={<LoginVerification setIsVerified={setIsVerified} />} /> 
           {isSignedUp && (
             <Route
               path="/home"
               element={
                 <div>
-                  <NavbarC /> {/* You can include the Navbar in the Home component */}
                   <Home />
                 </div>
               }

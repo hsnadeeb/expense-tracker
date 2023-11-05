@@ -35,7 +35,7 @@ const Login = ({setIsSignedUp}) => {
         const token = data.idToken;
         localStorage.setItem('token', token);
         setIsSignedUp(true);
-        navigate('/home');
+        navigate('/loginverification');
       } else {
         const errorData = await response.json();
         console.error('Login error:', errorData.error.message);
