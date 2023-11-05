@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Login = ({setIsSignedUp}) => {
   const [email, setEmail] = useState('');
@@ -35,7 +36,7 @@ const Login = ({setIsSignedUp}) => {
         const token = data.idToken;
         localStorage.setItem('token', token);
         setIsSignedUp(true);
-        navigate('/loginverification');
+        navigate('/home');
       } else {
         const errorData = await response.json();
         console.error('Login error:', errorData.error.message);
@@ -48,6 +49,8 @@ const Login = ({setIsSignedUp}) => {
       alert('Login failed. Please try again later.');
     }
   };
+
+
 
   return (
     <Container>
@@ -75,10 +78,12 @@ const Login = ({setIsSignedUp}) => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Form.Group>
-
+              <br/>
               <Button variant="primary" onClick={handleLogin}>
                 Login
               </Button>
+              <br/>
+              <Link to="/passwordreset">Forgot Password?</Link>
             </Form>
           </div>
         </Col>

@@ -8,6 +8,7 @@ import Profile from './components/pages/Profile';
 import NavbarC from './components/Navbar';
 import Welcome from './components/pages/Welcome';
 import LoginVerification from './components/pages/LoginVerification';
+import PasswordReset from './components/pages/PasswordReset';
 
 function App() {
   const [isSignedUp, setIsSignedUp] = useState(false);
@@ -29,6 +30,7 @@ function App() {
           <Route path="/signup" element={<Signup setIsSignedUp={setIsSignedUp} />} />
           <Route path="/login" element={<Login setIsSignedUp={setIsSignedUp} />} />
           <Route path="/loginverification" element={<LoginVerification setIsVerified={setIsVerified} />} /> 
+          <Route path="/passwordreset" element={<PasswordReset />} />
           {isSignedUp && (
             <Route
               path="/home"
