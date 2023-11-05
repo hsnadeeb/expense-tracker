@@ -4,49 +4,38 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './components/pages/Home';
 import Signup from './components/pages/Signup';
 import Login from './components/pages/Login';
+import Profile from './components/pages/Profile';
+import NavbarC from './components/Navbar';
+import Welcome from './components/pages/Welcome';
 
 function App() {
   const [isSignedUp, setIsSignedUp] = useState(false);
 
   return (
     <Router>
+      <NavbarC />
       <div className="App">
         <Routes>
-          <Route path='/' element={
-            <div>
-              <h1>Welcome to the Expense Tracker</h1>
-              <Signup setIsSignedUp={setIsSignedUp} />
-              <Login setIsSignedUp={setIsSignedUp} />
-            </div>
-          } />
-          {isSignedUp && <Route path='/home' element={<Home />}/> }
+          <Route path="/" element={<Welcome />} />
+          <Route path="/signup" element={<Signup setIsSignedUp={setIsSignedUp} />} />
+          <Route path="/login" element={<Login setIsSignedUp={setIsSignedUp} />} />
+          {isSignedUp && (
+            <Route
+              path="/home"
+              element={
+                <div>
+                  <NavbarC /> {/* You can include the Navbar in the Home component */}
+                  <Home />
+                </div>
+              }
+            />
+          )}
+          {isSignedUp && <Route path="/profile" element={<Profile />} />}
         </Routes>
       </div>
     </Router>
   );
 }
 
+
 export default App;
-
-// function App() {
-//   const [isSignedUp, setIsSignedUp] = useState(false);
-
-//   return (
-//     <Router>
-//       <div className="App">
-//         <Routes>
-//           <Route path='/signup' element={<Signup setIsSignedUp={setIsSignedUp} />} />
-//           {isSignedUp ? (
-//             <Route path='/' element={<Home />} />
-//           ) : (
-//             <Route path='login' element={<Login setIsSignedUp={setIsSignedUp} />} />
-//           )}
-//         </Routes>
-//       </div>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
-

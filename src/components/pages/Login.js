@@ -32,6 +32,8 @@ const Login = ({setIsSignedUp}) => {
       if (response.ok) {
         const data = await response.json();
         console.log('User has successfully logged in:', data);
+        const token = data.idToken;
+        localStorage.setItem('token', token);
         setIsSignedUp(true);
         navigate('/home');
       } else {
