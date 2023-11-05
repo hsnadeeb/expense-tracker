@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col, Table, Dropdown } from 'react-bootstrap';
 
 const Expenses = () => {
@@ -7,12 +7,60 @@ const Expenses = () => {
   const [category, setCategory] = useState('Select');
   const [expenses, setExpenses] = useState([]);
 
+  const fetchExpenseData = () => {
+    fetch("https://authenticate-8c62d-default-rtdb.firebaseio.com/expenses.json")
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Failed to fetch data");
+        }
+      })
+      .then((data) => {
+        // Handle the data you received from the database and update expenses state
+        const expenseData = [];
+        for (const key in data) {
+          expenseData.push(data[key]);
+        }
+        setExpenses(expenseData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  useEffect(() => {
+    // Fetch and populate user data when the component mounts
+    fetchExpenseData();
+  }, []);
+
   const addExpense = () => {
     const newExpense = {
       moneySpent,
       description,
       category,
     };
+
+    fetch("https://authenticate-8c62d-default-rtdb.firebaseio.com/expenses.json", {
+      method: "POST",
+      body: JSON.stringify(newExpense),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw Error("Failed to submit data");
+        }
+      })
+      .then((data) => {
+        console.log("Data submitted successfully:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
 
     setExpenses([...expenses, newExpense]);
     setMoneySpent('');
