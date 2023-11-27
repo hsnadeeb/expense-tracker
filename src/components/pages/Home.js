@@ -1,5 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col, Table, Dropdown, Modal } from 'react-bootstrap';
+// import { ThemeProvider } from 'styled-components';
+
+
+const lightTheme = {
+  body: '#fff',
+  text: '#333',
+  background: '#f8f9fa',
+};
+
+const darkTheme = {
+  body: '#333',
+  text: '#fff',
+  background: '#424242',
+};
+
 
 const Expenses = () => {
   const [moneySpent, setMoneySpent] = useState('');
@@ -10,6 +25,12 @@ const Expenses = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [totalAmount, settotalAmount] = useState(0);
   const [premiumActivated, setPremiumActivated] = useState(false);
+  const [theme, setTheme] = useState(lightTheme);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === lightTheme ? darkTheme : lightTheme));
+  };
+  
 
   const fetchExpenseData = () => {
     fetch("https://authenticate-8c62d-default-rtdb.firebaseio.com/expenses.json")
@@ -122,9 +143,30 @@ const Expenses = () => {
     }
   };
 
+  const downloadExpensesCSV = () => {
+    const csvContent = `Money Spent,Description,Category\n${expenses.map(expense => `${expense.moneySpent},${expense.description},${expense.category}`).join('\n')}`;
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'expenses.csv';
+    a.click();
+  };
+
   return (
-    <Container>
+    // <ThemeProvider theme={theme}>
+    <Container style={{ background: theme.background, color: theme.text }}>
       <br></br>
+      
+       {premiumActivated && (
+       <Button variant="secondary" onClick={toggleTheme} className="mb-3">
+          Toggle Theme
+        </Button>)}
+
+        {premiumActivated && (<Button variant="success" onClick={downloadExpensesCSV} className="mb-3 ml-2">
+          Download Expenses
+        </Button>
+       )}
       <Row className="justify-content-center">
         <Col md="6">
           <h2>Add an Expense</h2>
@@ -261,6 +303,7 @@ const Expenses = () => {
         </Modal.Footer>
       </Modal>
     </Container>
+    // </ThemeProvider>
   );
 };
 
