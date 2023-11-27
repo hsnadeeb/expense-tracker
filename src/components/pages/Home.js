@@ -8,6 +8,8 @@ const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [totalAmount, settotalAmount] = useState(0);
+  const [premiumActivated, setPremiumActivated] = useState(false);
 
   const fetchExpenseData = () => {
     fetch("https://authenticate-8c62d-default-rtdb.firebaseio.com/expenses.json")
@@ -20,10 +22,17 @@ const Expenses = () => {
       })
       .then((data) => {
         const expenseData = [];
+        let total=0;
         for (const key in data) {
+            const moneySpent = parseFloat(data[key].moneySpent);
           expenseData.push({ id: key, ...data[key] });
+          total=total+ moneySpent;
         }
+        console.log(total);
+        settotalAmount(total);
         setExpenses(expenseData);
+
+        setPremiumActivated(total > 10000);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -165,6 +174,7 @@ const Expenses = () => {
       <Row className="justify-content-center mt-4">
         <Col md="6">
           <h2 className="text-center mb-4">Expenses</h2>
+
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -192,6 +202,15 @@ const Expenses = () => {
               ))}
             </tbody>
           </Table>
+          <div className="text-right">
+      <strong>Total Amount: ${totalAmount.toFixed(2)}</strong>
+      {premiumActivated && (
+        <Button variant="warning" className="ml-2" onClick={() => console.log("Activate Premium")}>
+          Activate Premium
+        </Button>
+      )}
+      
+    </div>
         </Col>
       </Row>
 
