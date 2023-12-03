@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col, Table, Dropdown, Modal } from 'react-bootstrap';
-// import { ThemeProvider } from 'styled-components';
-
 
 const lightTheme = {
   body: '#fff',
@@ -26,11 +24,33 @@ const Expenses = () => {
   const [totalAmount, settotalAmount] = useState(0);
   const [premiumActivated, setPremiumActivated] = useState(false);
   const [theme, setTheme] = useState(lightTheme);
+  const [isPremiumActivated, setIsPremiumActivated] = useState(false);
+  const [storedTheme, setStoredTheme] = useState(localStorage.getItem('theme') || 'light');
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === lightTheme ? darkTheme : lightTheme));
+    const newTheme = theme === lightTheme ? darkTheme : lightTheme;
+    const newThemeName = newTheme === lightTheme ? 'light' : 'dark';
+    localStorage.setItem('theme', newThemeName);
+    setTheme(newTheme);
   };
   
+  // useEffect(() => {
+  //   setTheme(storedTheme);
+  //   fetchExpenseData();
+  // }, []);  
+  useEffect(() => {
+    // Set the theme based on the stored theme in localStorage
+    const storedThemeValue = localStorage.getItem('theme');
+    setStoredTheme(storedThemeValue || 'light');
+    setTheme(storedThemeValue === 'light' ? lightTheme : darkTheme);
+  }, []);
+
+  useEffect(() => {
+    if (totalAmount <= 10000) {
+      // Revert to light theme when expenses go below $10,000
+      setTheme(lightTheme);
+    }
+  }, [totalAmount]);
 
   const fetchExpenseData = () => {
     fetch("https://authenticate-8c62d-default-rtdb.firebaseio.com/expenses.json")
@@ -54,6 +74,7 @@ const Expenses = () => {
         setExpenses(expenseData);
 
         setPremiumActivated(total > 10000);
+        setIsPremiumActivated(total > 10000);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -154,16 +175,16 @@ const Expenses = () => {
   };
 
   return (
-    // <ThemeProvider theme={theme}>
-    <Container style={{ background: theme.background, color: theme.text }}>
+    
+    <Container fluid style={{ background: theme.background, color: theme.text }}>
       <br></br>
       
        {premiumActivated && (
-       <Button variant="secondary" onClick={toggleTheme} className="mb-3">
+       <Button variant="secondary" onClick={toggleTheme} className="mb-3" disabled={!isPremiumActivated}>
           Toggle Theme
         </Button>)}
 
-        {premiumActivated && (<Button variant="success" onClick={downloadExpensesCSV} className="mb-3 ml-2">
+        {premiumActivated && (<Button variant="success" onClick={downloadExpensesCSV} className="mb-3 ml-2" disabled={!isPremiumActivated}>
           Download Expenses
         </Button>
        )}
@@ -247,7 +268,7 @@ const Expenses = () => {
           <div className="text-right">
       <strong>Total Amount: ${totalAmount.toFixed(2)}</strong>
       {premiumActivated && (
-        <Button variant="warning" className="ml-2" onClick={() => console.log("Activate Premium")}>
+        <Button variant="warning" className="ml-2" onClick={() => setIsPremiumActivated(true)} disabled={!isPremiumActivated}>
           Activate Premium
         </Button>
       )}
